@@ -11,7 +11,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
 
 @Service
@@ -61,6 +60,31 @@ public class BookService {
                     String.format("Could not find book by id %s", id));
         }
         bookRepository.deleteById(id);
+    }
+    @CachePut(value = "bookCache", key = "#id")
+    public void loanBook(String id, Books book) {
+        if(!bookRepository.existsById(id)) {
+            log.error(String.format("Could not find book by id %s.", id));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, //404 -> Not found
+                    String.format("Could not find book by id %s.", id));
+        }
+        log.info("Loaning book.");
+        book.setId(id);
+        book.setAvailable(false);
+        bookRepository.save(book);
+    }
+
+    @CachePut(value = "bookCache", key = "#id")
+    public void returnBook(String id, Books book) {
+        if(!bookRepository.existsById(id)) {
+            log.error(String.format("Could not find book by id %s.", id));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, //404 -> Not found
+                    String.format("Could not find book by id %s.", id));
+        }
+        log.info("Returning book.");
+        book.setId(id);
+        book.setAvailable(true);
+        bookRepository.save(book);
     }
 
 }

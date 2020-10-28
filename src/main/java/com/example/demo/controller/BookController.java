@@ -11,6 +11,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Book;
 import java.util.List;
 
 @RestController
@@ -49,6 +50,20 @@ public class BookController {
     @Secured({"ROLE_ADMIN"})
     public void deleteBook(@PathVariable String id) {
         bookService.delete(id);
+    }
+
+    @PutMapping("/loan/{id}")
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void loanBook(@Validated @PathVariable String id, @RequestBody Books book) {
+        bookService.loanBook(id, book);
+    }
+
+    @PutMapping("/return/{id}")
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void returnBook(@Validated @PathVariable String id, @RequestBody Books book) {
+        bookService.returnBook(id, book);
     }
 
 

@@ -1,2 +1,6 @@
-package com.example.demo.entities;public enum Role {
+package com.example.demo.entities;
+
+public enum Role {
+    ADMIN,
+ USER
 }
